@@ -1,10 +1,12 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 # Create your views here.
 
 from .models import BlogPost
+from .forms_blog import BlogPostModelForm
 
-
+@login_required
 def blog_post_list_view(request):
     qs = BlogPost.objects.all()#.filter(title__icontains='hello') #queryset -> list of python object
     template_name = 'blog/post_list.html'
@@ -13,8 +15,15 @@ def blog_post_list_view(request):
 
 
 def blog_post_create_view(request):
-    template_name = 'blog/post_create.html'
-    context = {'form':None}
+    form = BlogPostModelForm(request.POST or None)
+    print("inside")
+    if form.is_valid():
+        obj = form.save(commit=False)
+        obj.save()
+        form = BlogPostModelForm()
+    print('after if')
+    context = {"form":form}
+    template_name = 'blog/form.html'
     return render(request, template_name,context)
 
 def blog_post_detail_view(request, slug):
