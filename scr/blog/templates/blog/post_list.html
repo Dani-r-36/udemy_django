@@ -1,3 +1,6 @@
-{% extends "base.html" %} {% block content %} {% for object in object_list %}
-<li>{{object.title}}</li>
-{% endfor %} {% endblock %}
+{% extends "base.html" %} 
+{% block content %} 
+    {% for object in object_list %} 
+        {% include 'blog/list-inline.html' with blog_post=object truncate=True detail=False%} 
+    {% endfor %} 
+{% endblock %}

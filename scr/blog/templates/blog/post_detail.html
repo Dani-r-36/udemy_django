@@ -1,4 +1,27 @@
-{% extends "base.html" %} {% block content %}
-<h1>{{object_list.title}}</h1>
-<p>{{object_list.content}}</p>
+{% extends "base.html" %} 
+{% block content %}
+{% include 'blog/list-inline.html' with blog_post=object_list truncate=False detail=True%} 
+
+<h2>Comments:</h2>
+<ul> here
+    {{ blog_post.comment_set.all }}
+    {% for comment in object_list.comment_set.all %}
+    <li>
+        <strong>{{ comment.author }}</strong> {{ comment.comment }}
+    </li>
+    {% endfor %}
+</ul>
+
+<h2>Add a comment:</h2>
+<form method="POST" action =".">
+  {% csrf_token %}
+  {{comment_form.as_p}}
+    <button type="submit">Send comment</button>
+</form>
+{% if request.user.is_authenticated %} 
+    {% if request.user.is_staff %}
+        <a href="{{object_list.get_edit_url }}">Edit</a>
+        <a href="{{object_list.get_delete_url }}">Delete</a>
+    {% endif %} 
+{% endif %} 
 {% endblock %}
